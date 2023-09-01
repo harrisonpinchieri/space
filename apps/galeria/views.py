@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from apps.galeria.forms import FotografiaForms
 
-from galeria.models import Fotografia
+from apps.galeria.models import Fotografia
 
 from django.contrib import messages
 
@@ -37,4 +38,26 @@ def buscar(request):
     return render(request, "galeria/buscar.html", {"cards": fotografias})
 
 
-# Create your views here.
+def nova_imagem(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "Usuário não logado.")
+        return redirect("login")
+
+    form = FotografiaForms
+
+    if request.method == "POST":
+        form = FotografiaForms(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Nova Fotografia cadastrada!")
+            return redirect("index")
+
+    return render(request, "galeria/nova_imagem.html", {"form": form})
+
+
+def editar_imagem(request):
+    pass
+
+
+def deletar_imagem(request):
+    pass
